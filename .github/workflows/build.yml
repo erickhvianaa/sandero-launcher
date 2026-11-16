@@ -24,32 +24,18 @@ jobs:
         with:
           gradle-version: 8.9
 
-      - name: Compilar NOVO
+      - name: Compilar APK
         working-directory: SanderoLauncher
         run: gradle assembleDebug --no-daemon -Dorg.gradle.jvmargs=-Xmx2g
 
-      - name: Compilar B
-        working-directory: SanderoLauncherB
-        run: gradle assembleDebug --no-daemon -Dorg.gradle.jvmargs=-Xmx2g
-
-      - name: Compilar A
-        working-directory: SanderoLauncherA
-        run: gradle assembleDebug --no-daemon -Dorg.gradle.jvmargs=-Xmx2g
-
-      - name: Copiar APKs
+      - name: Copiar APK
         run: |
-          cp SanderoLauncher/app/build/outputs/apk/debug/app-debug.apk 1-novo.apk
-          cp SanderoLauncherB/app/build/outputs/apk/debug/app-debug.apk 2-novo-sem-permissao.apk
-          cp SanderoLauncherA/app/build/outputs/apk/debug/app-debug.apk 3-antigo.apk
-          ls -l *.apk
-          for f in *.apk; do unzip -tq "$f"; done
+          cp SanderoLauncher/app/build/outputs/apk/debug/app-debug.apk SanderoLauncher.apk
+          unzip -tq SanderoLauncher.apk
 
       - name: Publicar release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.run_number }}
           name: Sandero Launcher ${{ github.run_number }}
-          files: |
-            1-novo.apk
-            2-novo-sem-permissao.apk
-            3-antigo.apk
+          files: SanderoLauncher.apk
